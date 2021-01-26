@@ -1,23 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
 
 function App() {
+
+  const [input, setInput] = useState("");
+  const [todos, setTodos] = useState([]);
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  })
+
+  const handleKeyDown = evt => {
+    switch (evt.key) {
+      case "Enter":
+        if (!input) {
+          return;
+        }
+        setTodos([...todos, { id: todos.length + 1, name: input }]);
+        setInput("");
+        break;
+      default:
+        return;
+    }
+  };
+
+  const handleInput = evt => setInput(evt.target.value);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <input type="text" value={input} onChange={handleInput}></input>
+      <ul>
+        {todos.map(todo => (
+          <li key={todo.id}>
+            {todo.name}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
