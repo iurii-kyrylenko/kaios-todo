@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./App.css";
+import { Header, Input, ToDos, Softkey } from "./components";
 import * as u from "./utils";
 
 function App() {
@@ -36,6 +36,7 @@ function App() {
         setSelected(u.getSelectedUp(selected, todos.length));
         setOffset(u.getOffsetUp(offset, selected, todos.length));
         break;
+      // case "SoftRight":
       case "ArrowRight":
         // Remove selected
         if (selected) {
@@ -64,27 +65,15 @@ function App() {
   };
 
   return (
-    <div>
-      <input
-        ref={inputRef}
-        type="text"
-        value={input}
-        onChange={handleInput}
+    <>
+      <Header title="ToDo List" />
+      <Input ref={inputRef} value={input} onChange={handleInput} />
+      <ToDos todos={todos} offset={offset} selected={selected} />
+      <Softkey
+        center={selected ? "Toggle" : "Insert"}
+        right={selected ? "Delete" : ""}
       />
-      <ul>
-        {u.getTodosSlice(todos, offset).map((todo, index) => (
-          <li
-            key={todo.id}
-            className={u.getTodoStyles(todo, selected, offset + index)}
-          >
-            {todo.name}
-          </li>
-        ))}
-      </ul>
-      <div>
-        <code>{u.getStatus(selected)}</code>
-      </div>
-    </div>
+    </>
   );
 }
 

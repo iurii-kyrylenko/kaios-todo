@@ -70,13 +70,3 @@ export const getTodosToggle = (todos, selected) => {
 
 export const getTodosSlice = (todos, offset) =>
   todos.slice(offset, offset + MAX_ITEMS);
-
-export const getTodoStyles = (todo, selected, index) => {
-  const selectedClass = (selected === index + 1) ? "selected" : "";
-  const completedClass = todo.completed ? "completed" : "";
-  return [selectedClass, completedClass].join(" ");
-}
-
-export const getStatus = selected => selected
-  ? "Center: TOGGLE | Right: Delete"
-  : "Center: INSERT";
