@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-
-const circular = (value, length) => length
-  ? (value + length + 1) % (length + 1)
-  : 0;
-
-let id = 1;
-const getId = () => id++;
+import * as u from "./utils";
 
 function App() {
   const inputRef = React.createRef();
@@ -14,65 +8,54 @@ function App() {
   const [input, setInput] = useState("");
   const [todos, setTodos] = useState([]);
   const [selected, setSelected] = useState(0);
+  const [offset, setOffset] = useState(0);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  });
 
-  useEffect(() => {
     if (selected) {
       inputRef.current.blur();
     } else {
       inputRef.current.focus();
     }
+
+    return () => document.removeEventListener("keydown", handleKeyDown);
   });
 
-  const changeSelected = value => setSelected(circular(value, todos.length));
+  const handleInput = evt => setInput(evt.target.value);
 
   const handleKeyDown = evt => {
     switch (evt.key) {
       case "ArrowDown":
         // Navigate down
-        changeSelected(selected + 1);
+        setSelected(u.getSelectedDown(selected, todos.length));
+        setOffset(u.getOffsetDown(offset, selected, todos.length));
         break;
       case "ArrowUp":
         // Navigate up
-        changeSelected(selected - 1);
+        setSelected(u.getSelectedUp(selected, todos.length));
+        setOffset(u.getOffsetUp(offset, selected, todos.length));
         break;
       case "ArrowRight":
-        // Skip when input
-        if (!selected) {
-          break;
-        }
         // Remove selected
-        const fst = todos.slice(0, selected - 1);
-        const snd = todos.slice(selected);
-        setTodos([...fst, ...snd]);
-        // Recalculate selected when removing last item
-        if (selected === todos.length) {
-          changeSelected(selected - 1);
+        if (selected) {
+          setTodos(u.getTodosDelete(todos, selected));
+          setSelected(u.getSelectedDelete(selected, todos.length));
+          setOffset(u.getOffsetDelete(offset, todos.length));
         }
         break;
       case "Enter":
         // Toggle selected
         if (selected) {
-          const fst = todos.slice(0, selected - 1);
-          const snd = todos.slice(selected);
-          const target = todos[selected - 1];
-          setTodos([
-            ...fst,
-            { ...target, completed: !target.completed },
-            ...snd
-          ]);
-          break;
-        }
-        // Prevent blank items
-        if (!input.trim()) {
+          setTodos(u.getTodosToggle(todos, selected));
           break;
         }
         // Add new item
-        setTodos([...todos, { id: getId(), name: input, completed: false }]);
+        const todo = input.trim();
+        if (todo) {
+          setTodos(u.getTodosCreate(todos, todo));
+          setOffset(u.getOffsetCreate(todos.length));
+        }
         setInput("");
         break;
       default:
@@ -80,30 +63,26 @@ function App() {
     }
   };
 
-  const handleInput = evt => setInput(evt.target.value);
-
-  const getTodoStyles = (todo, selected, index) => {
-    const selectedClass = (selected === index + 1) ? "selected" : "";
-    const completedClass = todo.completed ? "completed" : "";
-    return [selectedClass, completedClass].join(" ");
-  }
-
-  const status = selected
-    ? "Center: TOGGLE | Right: Delete"
-    : "Center: INSERT";
-
   return (
     <div>
-      <input ref={inputRef} type="text" value={input} onChange={handleInput} />
+      <input
+        ref={inputRef}
+        type="text"
+        value={input}
+        onChange={handleInput}
+      />
       <ul>
-        {todos.map((todo, index) => (
-          <li key={todo.id} className={getTodoStyles(todo, selected, index)}>
+        {u.getTodosSlice(todos, offset).map((todo, index) => (
+          <li
+            key={todo.id}
+            className={u.getTodoStyles(todo, selected, offset + index)}
+          >
             {todo.name}
           </li>
         ))}
       </ul>
       <div>
-        <code>{status}</code>
+        <code>{u.getStatus(selected)}</code>
       </div>
     </div>
   );
