@@ -36,8 +36,8 @@ function App() {
         setSelected(u.getSelectedUp(selected, todos.length));
         setOffset(u.getOffsetUp(offset, selected, todos.length));
         break;
-      // case "SoftRight":
-      case "ArrowRight":
+      // case "ArrowRight":
+      case "SoftRight":
         // Remove selected
         if (selected) {
           setTodos(u.getTodosDelete(todos, selected));

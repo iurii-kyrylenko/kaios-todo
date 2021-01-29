@@ -9,8 +9,6 @@ const getTodoStyles = (todo, selected, index) => {
 }
 
 export const ToDos = ({ todos, offset, selected }) => {
-//   if (toDos === undefined || !toDos.length) return null;
-
   return (
     <div className={css.todos}>
       {getTodosSlice(todos, offset).map((todo, index) => (
