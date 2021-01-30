@@ -7,18 +7,18 @@ export const getSelectedDown = (selected, length) =>
   selected === length ? 0 : selected + 1;
 
 export const getSelectedUp = (selected, length) =>
-  selected === 1 ? 0 : !selected ? length : selected - 1;
+  !selected ? length : selected - 1;
 
-export const getSelectedDelete = (selected, length) => {
-  if (length === 1) {
-    return 0;
+export const getSelectedDelete = (offset, selected, length) => {
+  if (!offset && selected === length) {
+    return selected - 1;
   }
-  if (selected === length) {
+  if (offset && offset + MAX_ITEMS === length) {
     return selected - 1;
   }
   return selected;
 }
-  
+
 export const getOffsetDown = (offset, selected, length) => {
   if (!selected) {
     return 0;

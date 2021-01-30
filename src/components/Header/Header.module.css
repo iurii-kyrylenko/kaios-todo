@@ -2,14 +2,18 @@ header {
   height: 36px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   background-color: #9b27af;
   padding: 3px 10px;
+  color: #ffffff;
 }
 
-header span {
+span.title {
   font-size: 16px;
   font-weight: 600;
-  color: #ffffff;
   text-transform: uppercase;
+}
+
+span.total {
+  font-size: 16px;
 }

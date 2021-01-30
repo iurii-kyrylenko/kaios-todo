@@ -22,8 +22,6 @@ function App() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   });
 
-  const handleInput = evt => setInput(evt.target.value);
-
   const handleKeyDown = evt => {
     switch (evt.key) {
       case "ArrowDown":
@@ -41,7 +39,7 @@ function App() {
         // Remove selected
         if (selected) {
           setTodos(u.getTodosDelete(todos, selected));
-          setSelected(u.getSelectedDelete(selected, todos.length));
+          setSelected(u.getSelectedDelete(offset, selected, todos.length));
           setOffset(u.getOffsetDelete(offset, todos.length));
         }
         break;
@@ -66,8 +64,8 @@ function App() {
 
   return (
     <>
-      <Header title="ToDo List" />
-      <Input ref={inputRef} value={input} onChange={handleInput} />
+      <Header title="ToDo List" total={todos.length} />
+      <Input ref={inputRef} value={input} onChange={setInput} />
       <ToDos todos={todos} offset={offset} selected={selected} />
       <Softkey
         center={selected ? "Toggle" : "Insert"}
